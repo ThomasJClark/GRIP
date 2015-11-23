@@ -6,44 +6,28 @@ import edu.wpi.grip.core.OutputSocket;
 import edu.wpi.grip.core.events.SocketPreviewChangedEvent;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
-import java.io.IOException;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A simple JavaFX container that automatically shows previews of all sockets marked as "previewed".
  *
  * @see OutputSocket#isPreviewed()
  */
-public class PreviewsView extends VBox {
+public class PreviewsController {
 
     @FXML
     private HBox previewBox;
 
-    private final EventBus eventBus;
-    private final List<OutputSocket<?>> previewedSockets;
+    @Inject
+    private EventBus eventBus;
 
-    public PreviewsView(EventBus eventBus) {
-        checkNotNull(eventBus);
+    private final List<OutputSocket<?>> previewedSockets = new ArrayList<>();
 
-        this.eventBus = eventBus;
-        this.previewedSockets = new ArrayList<>();
-
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Previews.fxml"));
-            fxmlLoader.setRoot(this);
-            fxmlLoader.setController(this);
-            fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+    public void initialize() {
         this.eventBus.register(this);
     }
 

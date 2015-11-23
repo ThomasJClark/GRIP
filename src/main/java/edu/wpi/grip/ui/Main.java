@@ -1,20 +1,27 @@
 package edu.wpi.grip.ui;
 
-import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import edu.wpi.grip.core.GRIPCoreModule;
 import edu.wpi.grip.core.events.FatalErrorEvent;
 import edu.wpi.grip.ui.util.DPIUtility;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class Main extends Application {
-    private final EventBus eventBus = new EventBus((exception, context) -> {
-        this.onFatalErrorEvent(new FatalErrorEvent(exception));
-    });
+//    private final EventBus eventBus = new EventBus((exception, context) -> {
+//        this.onFatalErrorEvent(new FatalErrorEvent(exception));
+//    });
+
+    private final Injector injector = Guice.createInjector(new GRIPCoreModule());
 
     private final Object dialogLock = new Object();
     private Parent root;
@@ -25,15 +32,24 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        this.eventBus.register(this);
-        this.root = new MainWindowView(eventBus);
+//        this.eventBus.register(this);
+//        this.root = new MainWindowController(eventBus);
+
+        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("MainWindow.fxml"));
+        fxmlLoader.setControllerFactory(injector::getInstance);
+
+        try {
+            this.root = fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         /**
          * Any exceptions thrown by the UI will be caught here and an exception dialog will be displayed
          */
-        Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
-            this.eventBus.post(new FatalErrorEvent(throwable));
-
-        });
+//        Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
+//            this.eventBus.post(new FatalErrorEvent(throwable));
+//        });
 
         root.setStyle("-fx-font-size: " + DPIUtility.FONT_SIZE + "px");
 

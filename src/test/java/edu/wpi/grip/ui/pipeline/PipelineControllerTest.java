@@ -25,7 +25,7 @@ import static junit.framework.TestCase.fail;
 import static org.testfx.api.FxAssert.verifyThat;
 import static org.testfx.api.FxAssert.verifyThatIter;
 
-public class PipelineViewTest extends ApplicationTest {
+public class PipelineControllerTest extends ApplicationTest {
     private EventBus eventBus;
     private Pipeline pipeline;
     private final AdditionOperation additionOperation = new AdditionOperation();
@@ -35,7 +35,7 @@ public class PipelineViewTest extends ApplicationTest {
     public void start(Stage stage) throws Exception {
         this.eventBus = new EventBus();
         this.pipeline = new Pipeline(eventBus);
-        final Scene scene = new Scene(new PipelineView(eventBus, pipeline), 800, 600);
+        final Scene scene = new Scene(new PipelineController(eventBus, pipeline), 800, 600);
         stage.setScene(scene);
         stage.show();
     }

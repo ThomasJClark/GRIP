@@ -5,8 +5,11 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.VBox?>
 <?import org.controlsfx.control.textfield.CustomTextField?>
-<fx:root fillWidth="true" styleClass="palette" type="javafx.scene.layout.VBox" xmlns="http://javafx.com/javafx/8.0.40"
-         xmlns:fx="http://javafx.com/fxml/1" onKeyPressed="operationSearch.requestFocus()">
+
+<javafx.scene.layout.VBox fillWidth="true" styleClass="palette" xmlns="http://javafx.com/javafx/8.0.40"
+                          xmlns:fx="http://javafx.com/fxml/1" onKeyPressed="operationSearch.requestFocus()"
+                          fx:id="root"
+                          fx:controller="edu.wpi.grip.ui.PaletteController">
     <children>
         <Label styleClass="pane-title" text="Operation Palette" maxWidth="Infinity"/>
         <CustomTextField fx:id="operationSearch" promptText="Search"/>
@@ -15,4 +18,4 @@
             <VBox fx:id="operations"/>
         </ScrollPane>
     </children>
-</fx:root>
+</javafx.scene.layout.VBox>

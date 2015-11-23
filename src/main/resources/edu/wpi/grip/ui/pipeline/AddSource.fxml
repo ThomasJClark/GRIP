@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import edu.wpi.grip.ui.util.DPIUtility ?>
+
+<javafx.scene.layout.HBox xmlns:fx="http://javafx.com/fxml" fillHeight="true"
+                          fx:id="root" fx:controller="edu.wpi.grip.ui.pipeline.AddSourceController">
+    <Button text="Add&#10;Image" textAlignment="CENTER" contentDisplay="TOP" onMouseClicked="#addImage">
+        <graphic>
+            <ImageView>
+                <Image url="@../icons/add-image.png"/>
+                <fitWidth>
+                    <DPIUtility fx:constant="SMALL_ICON_SIZE"/>
+                </fitWidth>
+                <fitHeight>
+                    <DPIUtility fx:constant="SMALL_ICON_SIZE"/>
+                </fitHeight>
+            </ImageView>
+        </graphic>
+    </Button>
+    <Button text="Add&#10;Webcam" textAlignment="CENTER" contentDisplay="TOP" onMouseClicked="#addWebcam">
+        <graphic>
+            <ImageView>
+                <Image url="@../icons/add-webcam.png"/>
+                <fitWidth>
+                    <DPIUtility fx:constant="SMALL_ICON_SIZE"/>
+                </fitWidth>
+                <fitHeight>
+                    <DPIUtility fx:constant="SMALL_ICON_SIZE"/>
+                </fitHeight>
+            </ImageView>
+        </graphic>
+    </Button>
+    <Button text="Add IP&#10;Camera" textAlignment="CENTER" contentDisplay="TOP" onMouseClicked="#addIPCamera">
+        <graphic>
+            <ImageView>
+                <Image url="@../icons/add-webcam.png"/>
+                <fitWidth>
+                    <DPIUtility fx:constant="SMALL_ICON_SIZE"/>
+                </fitWidth>
+                <fitHeight>
+                    <DPIUtility fx:constant="SMALL_ICON_SIZE"/>
+                </fitHeight>
+            </ImageView>
+        </graphic>
+    </Button>
+</javafx.scene.layout.HBox>

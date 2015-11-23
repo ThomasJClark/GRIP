@@ -9,24 +9,24 @@ import edu.wpi.grip.ui.util.SearchUtility;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.textfield.CustomTextField;
 import org.controlsfx.control.textfield.TextFields;
 
-import java.io.IOException;
+import javax.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
- * A JavaFX control that display a list of the available operations that the user may select from
+ * A JavaFX controller that display a list of the available operations that the user may select from
  *
  * @see OperationAddedEvent
  */
-public class PaletteView extends VBox {
+public class PaletteController {
+
+    @FXML
+    private VBox root;
 
     @FXML
     private VBox operations;
@@ -34,24 +34,13 @@ public class PaletteView extends VBox {
     @FXML
     private CustomTextField operationSearch;
 
-    private final EventBus eventBus;
-    private final Palette palette;
+    @Inject
+    private EventBus eventBus;
 
-    public PaletteView(EventBus eventBus, Palette palette) {
-        checkNotNull(eventBus);
+    @Inject
+    private Palette palette;
 
-        this.eventBus = eventBus;
-        this.palette = palette;
-
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Palette.fxml"));
-            fxmlLoader.setRoot(this);
-            fxmlLoader.setController(this);
-            fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+    public void initialize() {
         setupClearButtonField(operationSearch);
 
         for (Operation operation : this.palette.getOperations()) {
@@ -73,7 +62,7 @@ public class PaletteView extends VBox {
         this.operationSearch.textProperty().addListener(filterOperations);
 
         // The palette should have a lower priority for resizing than other elements
-        this.getProperties().put("resizable-with-parent", false);
+        this.root.getProperties().put("resizable-with-parent", false);
 
         this.eventBus.register(this);
     }

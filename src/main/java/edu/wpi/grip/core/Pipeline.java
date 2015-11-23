@@ -6,6 +6,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import edu.wpi.grip.core.events.*;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,24 +18,21 @@ import java.util.stream.Collectors;
  * The pipeline class is responsible for listening for other components of the application (such as the GUI) adding
  * or removing steps and connections, and for registering and unregistering them from the event bus when appropriate.
  */
+@Singleton
 @XStreamAlias(value = "grip:Pipeline")
 public class Pipeline {
 
     @XStreamOmitField
     private final EventBus eventBus;
 
-    private final List<Source> sources;
-    private final List<Step> steps;
-    private final Set<Connection> connections;
-    private Optional<Sink> sink;
+    private final List<Source> sources = new ArrayList<>();
+    private final List<Step> steps = new ArrayList<>();
+    private final Set<Connection> connections = new HashSet<>();
+    private Optional<Sink> sink = Optional.empty();
 
+    @Inject
     public Pipeline(EventBus eventBus) {
         this.eventBus = eventBus;
-        this.sources = new ArrayList<>();
-        this.steps = new ArrayList<>();
-        this.connections = new HashSet<>();
-        this.sink = Optional.empty();
-
         eventBus.register(this);
     }
 

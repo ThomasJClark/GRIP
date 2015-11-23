@@ -10,33 +10,27 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import javax.inject.Inject;
 
 /**
- * A JavaFX control fro the pipeline.  This control renders a list of steps.
+ * A JavaFX controller for the pipeline.  The view renders a list of sources, steps, and connections.
  */
-public class PipelineView extends StackPane implements Initializable {
-    @FXML
-    private VBox sources;
+public class PipelineController {
 
     @FXML
-    private Pane addSourcePane;
+    private StackPane root;
+
+    @FXML
+    private VBox sources;
 
     @FXML
     private HBox steps;
@@ -44,43 +38,25 @@ public class PipelineView extends StackPane implements Initializable {
     @FXML
     private Group connections;
 
-    private final EventBus eventBus;
-    private final Pipeline pipeline;
+    @Inject
+    private EventBus eventBus;
 
-    public PipelineView(EventBus eventBus, Pipeline pipeline) {
-        checkNotNull(eventBus);
-        checkNotNull(pipeline);
+    @Inject
+    private Pipeline pipeline;
 
-        this.eventBus = eventBus;
-        this.pipeline = pipeline;
+    /**
+     * Add an initial view for any source or step already in the pipeline
+     */
+    public void initialize() {
+        this.pipeline.getSources().forEach(source ->
+                this.sources.getChildren().addAll(new SourceView(this.eventBus, source)));
 
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Pipeline.fxml"));
-            fxmlLoader.setRoot(this);
-            fxmlLoader.setController(this);
-            fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        this.addSourcePane.getChildren().add(new AddSourceView(eventBus));
-
-        this.eventBus.register(this);
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        for (Source source : this.pipeline.getSources()) {
-            for (OutputSocket<?> socket : source.getOutputSockets()) {
-                this.sources.getChildren().add(new OutputSocketView(eventBus, socket));
-            }
-        }
-
-        for (Step step : this.pipeline.getSteps()) {
-            this.steps.getChildren().add(new StepView(this.eventBus, step));
-        }
+        this.pipeline.getSteps().forEach(step ->
+                this.steps.getChildren().addAll(new StepView(this.eventBus, step)));
 
         connections.getChildren().add(new Rectangle(0, 0, 1, 1));
+
+        this.eventBus.register(this);
     }
 
     public Pipeline getPipeline() {
@@ -210,8 +186,10 @@ public class PipelineView extends StackPane implements Initializable {
                 synchronized (this) {
                     final Node outputHandle = outputSocketView.getHandle();
                     final Node inputHandle = inputSocketView.getHandle();
-                    final Bounds outputSocketBounds = this.sceneToLocal(outputHandle.localToScene(outputHandle.getLayoutBounds()));
-                    final Bounds inputSocketBounds = this.sceneToLocal(inputHandle.localToScene(inputHandle.getLayoutBounds()));
+                    final Bounds outputSocketBounds = this.root.sceneToLocal(outputHandle.localToScene(
+                            outputHandle.getLayoutBounds()));
+                    final Bounds inputSocketBounds = this.root.sceneToLocal(inputHandle.localToScene(
+                            inputHandle.getLayoutBounds()));
                     final double x1 = outputSocketBounds.getMinX() + outputSocketBounds.getWidth() / 2.0;
                     final double y1 = outputSocketBounds.getMinY() + outputSocketBounds.getHeight() / 2.0;
                     final double x2 = inputSocketBounds.getMinX() + inputSocketBounds.getWidth() / 2.0;

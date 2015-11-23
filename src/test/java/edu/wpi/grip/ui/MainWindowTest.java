@@ -17,7 +17,7 @@ public class MainWindowTest extends ApplicationTest {
     public void start(Stage stage) throws Exception {
         new Main().start(stage);
 
-        final PaletteView palette = lookup(".palette").<PaletteView>queryFirst();
+        final PaletteController palette = lookup(".palette").<PaletteController>queryFirst();
         palette.clearOperations();
         palette.onOperationAdded(new OperationAddedEvent(new AdditionOperation()));
     }

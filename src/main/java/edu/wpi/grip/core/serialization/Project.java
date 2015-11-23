@@ -6,6 +6,7 @@ import edu.wpi.grip.core.*;
 import edu.wpi.grip.core.sources.CameraSource;
 import edu.wpi.grip.core.sources.ImageFileSource;
 
+import javax.inject.Inject;
 import java.io.*;
 import java.util.Optional;
 
@@ -14,13 +15,15 @@ import java.util.Optional;
  */
 public class Project {
 
+    @Inject
+    private Pipeline pipeline;
+
     private final XStream xstream = new XStream();
-    private final Pipeline pipeline;
+
     private Optional<File> file = Optional.empty();
 
+    @Inject
     public Project(EventBus eventBus, Pipeline pipeline, Palette palette) {
-        this.pipeline = pipeline;
-
         this.xstream.registerConverter(new StepConverter(eventBus, palette));
         this.xstream.registerConverter(new SourceConverter(eventBus, xstream.getMapper()));
         this.xstream.registerConverter(new SocketConverter(xstream.getMapper(), pipeline));
