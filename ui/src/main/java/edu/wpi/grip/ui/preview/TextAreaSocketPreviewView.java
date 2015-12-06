@@ -35,7 +35,7 @@ public class TextAreaSocketPreviewView<T> extends SocketPreviewView<T> {
         final Socket socket = event.getSocket();
 
         if (socket == this.getSocket()) {
-            this.text.setText(socket.getValue().toString());
+            this.text.setText(socket.getValue().orElse("").toString());
         }
     }
 }
